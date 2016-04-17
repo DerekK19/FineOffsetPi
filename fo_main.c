@@ -106,16 +106,18 @@ void rfm01_set_register(uint16_t cmd)
 void rfm01_init()
 {
     rfm01_set_register(CMD_CONFIG |		// -------- Configuration Setting Command --------
-		BAND_915 |                  	// selects the 915 MHz frequency band
+		//BAND_915 |                  	// selects the 915 MHz frequency band
 		//BAND_868 |                  	// selects the 868 MHz frequency band
+		BAND_433 |                  	// selects the 433 MHz frequency band
 		LOWBATT_EN |                	// enable the low battery detector
 		CRYSTAL_EN |                	// the crystal is active during sleep mode
 		LOAD_CAP_12C5 |             	// 12.5pF crystal load capacitance
 		BW_134);                    	// 134kHz baseband bandwidth
 
     rfm01_set_register(CMD_FREQ |		// -------- Frequency Setting Command --------
-		0x07d0);                    	// 915.0 MHz --> F = ((915/(10*3))-30)*4000 = 2000 = 0x07d0
-		// 0x067c);						// 868.3 MHz --> F = ((868.3/(10*2))-43)*4000 = 1660 = 0x067c
+		// 0x07d0);                    	// 915.0 MHz --> F = ((915/(10*3))-30)*4000 = 2000 = 0x07d0
+		// 0x067c);			// 868.3 MHz --> F = ((868.3/(10*2))-43)*4000 = 1660 = 0x067c
+		0x0618);			// 433.9 MHz --> F = ((433.9/(10*1))-43)*4000 = 1660 = 0x067c ???? Not sure where this calculation comes from (DGK)
 
     rfm01_set_register(CMD_WAKEUP |		// -------- Wake-Up Timer Command --------
 		1<<8 |                      	// R = 1
@@ -338,7 +340,7 @@ void pgm_init()
 	char msg4[] = "%s\tNo BMP%d85\n"; // well that's tricky
 #endif
 	char msg5[] = "%s\tWind Speed Multiplier: %.1f\n";
-	char msg6[] = "%s\tUnits: %d\n\n";
+	char msg6[] = "%s\tUnits: %u\n\n";
 
     if(arg.logging)
     {
@@ -348,7 +350,8 @@ void pgm_init()
         fprintf(logfile, msg3, today);
 		fprintf(logfile, msg4, today, (int)arg.altitude);
 		fprintf(logfile, msg5, today, arg.wspeedm);
-		fprintf(logfile, msg6, today, arg.logging);
+		fprintf(logfile, msg6, today, arg.units);
+		fflush(logfile);
     }
 
     if(arg.verbose)
@@ -358,7 +361,7 @@ void pgm_init()
 		printf(msg3, today);
 		printf(msg4, today, (int)arg.altitude);
 		printf(msg5, today, arg.wspeedm);
-		printf(msg6, today, arg.logging);
+		printf(msg6, today, arg.units);
     }
 
 	strcpy(wdata[0].datetime, today);

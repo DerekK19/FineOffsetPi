@@ -104,7 +104,7 @@ void dayfile_read()
 		wmm[MIN].rain = wmm[MAX].rain = rain;
 	}
 
-	fclose(dayfile);
+	if (dayfile!=NULL) fclose(dayfile);
 }
 
 
