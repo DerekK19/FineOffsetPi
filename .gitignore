@@ -1,0 +1,5 @@
+*.o
+fopi
+fopi.log
+fopi.dayfile
+fopi.details
